@@ -1,0 +1,11 @@
+.radius{border-radius:5px;}
+.gradient{background:#dddddd;background-image:-moz-linear-gradient(bottom, #dddddd 0%, #f6f6f6 100%);background-image:linear-gradient(to top, #dddddd 0%, #f6f6f6 100%);background-image:-webkit-linear-gradient(bottom, #dddddd 0%, #f6f6f6 100%);}
+.inner-shade{box-shadow:0px 0px 5px #ccc inset;}
+.word:hover{cursor:pointer;}
+.tiny-button{padding:0px;width:15px;height:15px;}
+.textareas{box-shadow:0px 0px 5px #ccc inset;border-radius:5px;outline:none;resize:none;border:1px solid #cccccc;}
+.constraints{width:calc(100% - 10px);width:-webkit-calc(100% - 10px);width:-moz-calc(100% - 10px);min-height:40px;box-shadow:0px 0px 5px #ccc inset;border-radius:5px;outline:none;resize:none;border:1px solid #cccccc;}
+.target{border-radius:5px;border:1px solid #cccccc;width:calc(100% - 10px);width:-webkit-calc(100% - 10px);width:-moz-calc(100% - 10px);min-height:40px;background:white;padding:5px 5px;background:#dddddd;background-image:-moz-linear-gradient(bottom, #dddddd 0%, #f6f6f6 100%);background-image:linear-gradient(to top, #dddddd 0%, #f6f6f6 100%);background-image:-webkit-linear-gradient(bottom, #dddddd 0%, #f6f6f6 100%);text-align:center;line-height:50px;}
+.slot{margin:0px 3px;box-shadow:0px 0px 5px #ccc inset;border-radius:5px;outline:none;resize:none;border:1px solid #cccccc;border-radius:0px;box-shadow:none;box-shadow:0px 0px 5px #ccc;background:#f5f5f5;}
+.atom{margin:0px 3px;box-shadow:0px 0px 5px #ccc inset;border-radius:5px;outline:none;resize:none;border:1px solid #cccccc;}
+.cloud{border-radius:5px;border:1px solid #cccccc;margin:5px 0px;padding:5px 5px;background:#dddddd;background-image:-moz-linear-gradient(bottom, #dddddd 0%, #f6f6f6 100%);background-image:linear-gradient(to top, #dddddd 0%, #f6f6f6 100%);background-image:-webkit-linear-gradient(bottom, #dddddd 0%, #f6f6f6 100%);}

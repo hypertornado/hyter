@@ -16,9 +16,25 @@
 	box-shadow: 0px 0px 5px #ccc inset;
 }
 
+.word {
+	color: #aaa;
+	padding: 2px;
+}
+
+.word-selected {
+	background: #111;
+	color: #EEE;
+	border-bottom: 2px solid #111;
+}
+
 .word:hover {
-	/*color: silver;*/
 	cursor: pointer;
+	background: #EEE;
+	border-bottom: 2px solid #111;
+}
+
+.word-selected:hover {
+	background: #000;
 }
 
 .tiny-button {
@@ -77,4 +93,36 @@
 	margin: 5px 0px;
 	padding: 5px 5px;
 	.gradient();
+}
+
+@bottom_height: 300px;
+
+#bottom-empty-block {
+	width: 100%;
+	height: @bottom_height;
+}
+
+#bottom-menu {
+	background: #f6f6f6;
+	border-top: 2px solid black;
+	width: 100%;
+	height: @bottom_height;
+	bottom: 0px;
+	position: fixed;
+	/*box-shadow: 0px -2px 2px #fff;*/
+	padding-top: 5px;
+}
+
+.tab-pane {
+	background: white;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	padding: 5px;
+	margin: 0px;
+	overflow: auto;
+	height: (@bottom_height - 55px);
+	margin: 0px 20px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }

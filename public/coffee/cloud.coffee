@@ -18,15 +18,16 @@ class Cloud
 				text: "x"
 				class: "btn btn-danger"
 				click: =>
-					if confirm("Delete this cloud?")
+					if confirm("Delete this bubble?")
 						@html.remove()
 			)
 		))
-		h.append("covered tokens: ")
 		for word in @words
-			w = $("<input>"
-					type: "checkbox"
-					title: word
+			w = $("<span>"
+					class: "word"
+					text: "#{word}"
+					click: (event) =>
+						$(event.target).toggleClass("word-selected")
 				)
 			h.append(w)
 		h.append("<br>")
@@ -41,7 +42,7 @@ class Cloud
 		)
 		h.append(constraints)
 		h.append(target)
-		h.children().filter("input[type=checkbox]").tooltip()
+		#h.children().filter("input[type=checkbox]").tooltip()
 		return h
 
 	slot: (dir = false) =>

@@ -22,17 +22,19 @@ Cloud = (function() {
         text: "x",
         "class": "btn btn-danger",
         click: function() {
-          if (confirm("Delete this cloud?")) return _this.html.remove();
+          if (confirm("Delete this bubble?")) return _this.html.remove();
         }
       })
     }));
-    h.append("covered tokens: ");
     _ref = this.words;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       word = _ref[_i];
-      w = $("<input>", {
-        type: "checkbox",
-        title: word
+      w = $("<span>", {
+        "class": "word",
+        text: "" + word,
+        click: function(event) {
+          return $(event.target).toggleClass("word-selected");
+        }
       });
       h.append(w);
     }
@@ -48,7 +50,6 @@ Cloud = (function() {
     });
     h.append(constraints);
     h.append(target);
-    h.children().filter("input[type=checkbox]").tooltip();
     return h;
   };
 
@@ -121,7 +122,13 @@ Hyter = (function() {
 $(function() {
   var words;
   words = "hello world how are you";
-  return new Hyter(words);
+  new Hyter(words);
+  $("#new-cloud").click();
+  $("#new-cloud").click();
+  $("#new-cloud").click();
+  $("#new-cloud").click();
+  $("#new-cloud").click();
+  return $("#new-cloud").click();
 });
 
 Sentence = (function() {
@@ -153,7 +160,7 @@ Sentence = (function() {
       h.append(this.word(word));
     }
     $("#top-right").append($("<button>", {
-      text: "+ New cloud",
+      text: "+ New bubble",
       "class": "btn btn-primary",
       id: "new-cloud",
       click: function() {
@@ -174,8 +181,7 @@ Sentence = (function() {
   Sentence.prototype.word = function(w) {
     var h;
     h = $("<span>", {
-      text: "" + w + " ",
-      "class": "word"
+      text: "" + w + " "
     });
     return h;
   };

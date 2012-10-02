@@ -18,7 +18,7 @@ class Sentence
 			h.append(@word(word))
 		$("#top-right").append(
 			$("<button>"
-				text: "+ New cloud"
+				text: "+ New bubble"
 				class: "btn btn-primary"
 				id: "new-cloud"
 				click: =>
@@ -40,6 +40,5 @@ class Sentence
 	word: (w) =>
 		h = $("<span>"
 			text: "#{w} "
-			class: "word"
 		)
 		return h

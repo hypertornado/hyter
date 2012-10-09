@@ -52,10 +52,11 @@
 }
 
 .constraints {
-	width: calc(~"100% - 10px");
+	width: 200px;
+	/*width: calc(~"100% - 10px");
 	width: -webkit-calc(~"100% - 10px");
-	width: -moz-calc(~"100% - 10px");
-	min-height: 40px;
+	width: -moz-calc(~"100% - 10px");*/
+	min-height: 50px;
 	.textareas();
 }
 
@@ -63,14 +64,15 @@
 	.radius();
 	border: 1px solid @gray;
 	width: calc(~"100% - 10px");
-	width: -webkit-calc(~"100% - 10px");
+	width: -webkit-calc(~"100% - 230px");
 	width: -moz-calc(~"100% - 10px");
-	min-height: 40px;
+	min-height: 50px;
 	background: white;
 	padding: 5px 5px;
 	.gradient();
 	text-align: center;
 	line-height: 50px;
+	float: right;
 }
 
 .slot {
@@ -125,4 +127,17 @@
 	margin: 0px 20px;
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
+}
+
+.head-word {
+	cursor: pointer;
+}
+
+.head-word-selected {
+	color: white;
+	background: black;
+}
+
+.head-word:hover {
+	border-bottom: 3px solid black;
 }

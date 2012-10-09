@@ -2,16 +2,11 @@
 class Hyter
 
 	constructor: (words) ->
-		sentence = new Sentence(words)
+		sentence = new Sentence(words, this)
 		console.log sentence.words
 
 
 $ ->
-	words = "hello world how are you"
+	words = "hello world"
 	new Hyter(words)
-	$("#new-cloud").click()
-	$("#new-cloud").click()
-	$("#new-cloud").click()
-	$("#new-cloud").click()
-	$("#new-cloud").click()
 	$("#new-cloud").click()

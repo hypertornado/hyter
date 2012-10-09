@@ -22,6 +22,7 @@ class Cloud
 						@html.remove()
 			)
 		))
+		i = 0
 		for word in @words
 			w = $("<span>"
 					class: "word"
@@ -30,6 +31,7 @@ class Cloud
 						$(event.target).toggleClass("word-selected")
 				)
 			h.append(w)
+			i += 1
 		h.append("<br>")
 		constraints = $("<textarea>"
 			class: "constraints"
@@ -40,8 +42,14 @@ class Cloud
 			class: "target"
 			html: @slot()
 		)
-		h.append(constraints)
+		h.append($("<div>"
+			style: "clear: both;"
+		))
 		h.append(target)
+		h.append(constraints)
+		h.append($("<div>"
+			style: "clear: both;"
+		))
 		#h.children().filter("input[type=checkbox]").tooltip()
 		return h
 
@@ -61,7 +69,7 @@ class Cloud
 				slot = @slot("left")
 				slot.hide()
 				$(event.target).before(slot)
-				slot.show("slow")
+				slot.show("fast")
 		)
 		right = $("<a>"
 			html: "+"
@@ -70,7 +78,7 @@ class Cloud
 				slot = @slot("right")
 				slot.hide()
 				$(event.target).after(slot)
-				slot.show("slow")
+				slot.show("fast")
 		)
 		h.prepend(left)
 		h.append(right)

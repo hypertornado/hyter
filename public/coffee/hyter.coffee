@@ -8,5 +8,6 @@ class Hyter
 
 $ ->
 	words = "hello world"
+	words = prompt("Enter sentence for annotation:", "Hello world")
 	new Hyter(words)
 	$("#new-cloud").click()

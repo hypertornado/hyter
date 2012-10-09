@@ -130,6 +130,7 @@ Hyter = (function() {
 $(function() {
   var words;
   words = "hello world";
+  words = prompt("Enter sentence for annotation:", "Hello world");
   new Hyter(words);
   return $("#new-cloud").click();
 });

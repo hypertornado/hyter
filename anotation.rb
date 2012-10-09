@@ -1,3 +1,5 @@
+#ssh -L 8888:10.10.24.118:80 odchazel@ufallab.ms.mff.cuni.cz
+
 require "json"
 require "digest/sha2"
 require "tempfile"

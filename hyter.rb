@@ -2,7 +2,7 @@ require 'sinatra'
 require_relative "anotation.rb"
 require "sqlite3"
 require "json"
-require "sinatra/reloader" if development?
+#require "sinatra/reloader" if development?
 
 enable :sessions
 

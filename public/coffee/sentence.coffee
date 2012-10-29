@@ -4,11 +4,18 @@ class Sentence
 	words: null
 	clouds: []
 
-	constructor: (text, hyter) ->
+	constructor: (text, data, hyter) ->
 		@hyter = hyter
-		@words = text.split(" ")
 		@last_result = []
+		if text
+			@words = text.split(" ")
+		else
+			@words = data.words
 		$("#sentence").append(@component())
+		if data
+			$("span[data-name='#{data.root}']").click()
+			for option in data.options
+				@create_cloud(option)
 
 	create_request: =>
 		w = []
@@ -54,37 +61,11 @@ class Sentence
 		if options.length == 0
 			alert "No bubble is defined correctly."
 			return false
+		req.words = @words
 		return JSON.stringify(req)
 
-	create_request_old: =>
-		req = '
-{
-		"source": ["hello", "world"],
-		"root": "hello",
-		"options":
-			[
-				{
-					"covered": ["hello"],
-					"up_rules": ["pl"],
-					"target": ["ahoj", []]
-				},
-				{
-					"covered": ["world"],
-					"up_rules": ["pl"],
-					"target": ["svete"]
-				},
-				{
-					"covered": ["world"],
-					"up_rules": ["pl"],
-					"target": ["sveticku"]
-				}
-			]
-	}
-			'
-		return req
-
-	create_cloud: =>
-		cloud = new Cloud(@words)
+	create_cloud: (data) =>
+		cloud = new Cloud(@words, data)
 		$("#clouds").append(cloud.html)
 
 	component: =>

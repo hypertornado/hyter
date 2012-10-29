@@ -2,7 +2,8 @@
 
 class Cloud
 
-	constructor: (words) ->
+	constructor: (words, option) ->
+		@option = option
 		@words = words
 		@html = @component()
 
@@ -27,17 +28,23 @@ class Cloud
 			w = $("<span>"
 					class: "word"
 					text: "#{word}"
+					"data-word-id": "w_#{i}"
 					click: (event) =>
 						$(event.target).toggleClass("word-selected")
 				)
 			h.append(w)
 			i += 1
+		if @option
+			for covered in @option.covered
+				h.children().filter("[data-word-id='#{covered}']").click()
 		h.append("<br>")
 		constraints = $("<textarea>"
 			class: "constraints"
 			placeholder: "Constraints we satisfy"
 			spellcheck: "false"
 		)
+		if @option
+			constraints.val(@option.up_rules.join("\n"))
 		target = $("<div>"
 			class: "target"
 			html: @slot()
@@ -50,7 +57,22 @@ class Cloud
 		h.append($("<div>"
 			style: "clear: both;"
 		))
-		#h.children().filter("input[type=checkbox]").tooltip()
+		if @option
+			console.log "X: #{@option.target.length}"
+			i = 0
+			while i < (@option.target.length - 1) / 2
+				target.children().filter(".btn").first().click()
+				i += 1
+
+			i = 0
+			for tar in @option.target
+				if $.isArray(tar)
+					value = tar.join("\n")
+				else
+					value = tar
+				$(target.children().filter("textarea")[i]).val(value)
+				i += 1
+
 		return h
 
 	slot: (dir = false) =>

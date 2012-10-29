@@ -3,14 +3,15 @@ var Cloud, Hyter, Sentence,
 
 Cloud = (function() {
 
-  function Cloud(words) {
+  function Cloud(words, option) {
     this.slot = __bind(this.slot, this);
-    this.component = __bind(this.component, this);    this.words = words;
+    this.component = __bind(this.component, this);    this.option = option;
+    this.words = words;
     this.html = this.component();
   }
 
   Cloud.prototype.component = function() {
-    var constraints, h, i, target, w, word, _i, _len, _ref,
+    var constraints, covered, h, i, tar, target, value, w, word, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3,
       _this = this;
     h = $("<div>", {
       "class": "cloud",
@@ -33,6 +34,7 @@ Cloud = (function() {
       w = $("<span>", {
         "class": "word",
         text: "" + word,
+        "data-word-id": "w_" + i,
         click: function(event) {
           return $(event.target).toggleClass("word-selected");
         }
@@ -40,12 +42,20 @@ Cloud = (function() {
       h.append(w);
       i += 1;
     }
+    if (this.option) {
+      _ref2 = this.option.covered;
+      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+        covered = _ref2[_j];
+        h.children().filter("[data-word-id='" + covered + "']").click();
+      }
+    }
     h.append("<br>");
     constraints = $("<textarea>", {
       "class": "constraints",
       placeholder: "Constraints we satisfy",
       spellcheck: "false"
     });
+    if (this.option) constraints.val(this.option.up_rules.join("\n"));
     target = $("<div>", {
       "class": "target",
       html: this.slot()
@@ -58,6 +68,26 @@ Cloud = (function() {
     h.append($("<div>", {
       style: "clear: both;"
     }));
+    if (this.option) {
+      console.log("X: " + this.option.target.length);
+      i = 0;
+      while (i < (this.option.target.length - 1) / 2) {
+        target.children().filter(".btn").first().click();
+        i += 1;
+      }
+      i = 0;
+      _ref3 = this.option.target;
+      for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
+        tar = _ref3[_k];
+        if ($.isArray(tar)) {
+          value = tar.join("\n");
+        } else {
+          value = tar;
+        }
+        $(target.children().filter("textarea")[i]).val(value);
+        i += 1;
+      }
+    }
     return h;
   };
 
@@ -117,10 +147,11 @@ Cloud = (function() {
 
 Hyter = (function() {
 
-  function Hyter(words) {
+  function Hyter(words, data) {
     var sentence;
-    sentence = new Sentence(words, this);
-    console.log(sentence.words);
+    sentence = new Sentence(words, data, this);
+    $("#annotation-navigation").hide();
+    $("#annotation-app").show();
   }
 
   return Hyter;
@@ -128,11 +159,25 @@ Hyter = (function() {
 })();
 
 $(function() {
-  var words;
-  words = "hello world";
-  words = prompt("Enter sentence for annotation:", "Hello world");
-  new Hyter(words);
-  return $("#new-cloud").click();
+  var _this = this;
+  $("#annotation-app").hide();
+  $("#new-annotation").click(function() {
+    var words;
+    words = prompt("Enter sentence for annotation:", "");
+    return new Hyter(words, false);
+  });
+  return $(".saved-annotation").click(function(event) {
+    var id;
+    id = $(event.target).data("id");
+    return $.ajax("/result/" + id + "", {
+      success: function(result) {
+        result = JSON.parse(result);
+        result = JSON.parse(result[3]);
+        new Hyter(false, result);
+        return console.log(result);
+      }
+    });
+  });
 });
 
 Sentence = (function() {
@@ -141,15 +186,28 @@ Sentence = (function() {
 
   Sentence.prototype.clouds = [];
 
-  function Sentence(text, hyter) {
+  function Sentence(text, data, hyter) {
     this.word = __bind(this.word, this);
     this.component = __bind(this.component, this);
     this.create_cloud = __bind(this.create_cloud, this);
-    this.create_request_old = __bind(this.create_request_old, this);
-    this.create_request = __bind(this.create_request, this);    this.hyter = hyter;
-    this.words = text.split(" ");
+    this.create_request = __bind(this.create_request, this);
+    var option, _i, _len, _ref;
+    this.hyter = hyter;
     this.last_result = [];
+    if (text) {
+      this.words = text.split(" ");
+    } else {
+      this.words = data.words;
+    }
     $("#sentence").append(this.component());
+    if (data) {
+      $("span[data-name='" + data.root + "']").click();
+      _ref = data.options;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        option = _ref[_i];
+        this.create_cloud(option);
+      }
+    }
   }
 
   Sentence.prototype.create_request = function() {
@@ -212,41 +270,13 @@ Sentence = (function() {
       alert("No bubble is defined correctly.");
       return false;
     }
+    req.words = this.words;
     return JSON.stringify(req);
   };
 
-  Sentence.prototype.create_request_old = function() {
-    var req;
-    req = '\
-{\
-		"source": ["hello", "world"],\
-		"root": "hello",\
-		"options":\
-			[\
-				{\
-					"covered": ["hello"],\
-					"up_rules": ["pl"],\
-					"target": ["ahoj", []]\
-				},\
-				{\
-					"covered": ["world"],\
-					"up_rules": ["pl"],\
-					"target": ["svete"]\
-				},\
-				{\
-					"covered": ["world"],\
-					"up_rules": ["pl"],\
-					"target": ["sveticku"]\
-				}\
-			]\
-	}\
-			';
-    return req;
-  };
-
-  Sentence.prototype.create_cloud = function() {
+  Sentence.prototype.create_cloud = function(data) {
     var cloud;
-    cloud = new Cloud(this.words);
+    cloud = new Cloud(this.words, data);
     return $("#clouds").append(cloud.html);
   };
 

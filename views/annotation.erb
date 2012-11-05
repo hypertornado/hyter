@@ -24,10 +24,11 @@
           </a>
           <a class="brand" href="#">DepRefSet - <%= @user %></a>
           <ul class="nav">
-            <li><a href="/logout">logout</a>
+            <li><a href="/logout">logout</a></li>
+            <li id="zoom-settings" style="padding-top: 12px;"></li>
           </ul>
-          <span style="float: right;" id="top-right">
-          </span>
+          <div class="nav pull-right" id="top-right">
+          </div>
         </div>
       </div>
     </div>
@@ -36,21 +37,29 @@
 
   <div id="annotation-navigation">
   <h2>Annotations</h2>
-  <ul>
+  <table class="table">
   <% @annotations.each do |a| %>
-    <li><a href="#" data-id="<%= a[0] %>" class="saved-annotation"><%= a[2] %></a>
-      <form method="post" action="/remove_result" onsubmit="confirm('Really want to delete this annotation?')">
-        <input type="hidden" name="sentence" value="<%= a[2] %>">
-        <input type="submit" value="Delete" class="btn btn-danger">
-      </form>
-    </li>
+    <% if a[4] == nil %>
+      <tr>
+        <td>
+          <a href="#" data-id="<%= a[0] %>" class="saved-annotation"><%= a[2] %></a>
+        </td>
+        <td>
+          <form method="post" action="/remove_result" onsubmit="return confirm('Really want to delete this annotation?')">
+            <input type="hidden" name="sentence" value="<%= a[2] %>">
+            <input type="submit" value="Delete" class="btn btn-danger btn-small" style="height: 20px;
+            margin: 0px; padding: 2px;">
+          </form>
+        </td>
+      </tr>
+    <% end %>
   <% end %>
-  </ul>
+  </table>
   <button class="btn btn-submit" id="new-annotation">Create new annotation</button>
   </div>
 
   <div id="annotation-app">
-    <div class="container-fluid" id="content">
+    <div class="contain" id="content">
       <div id="sentence">
 
       </div>

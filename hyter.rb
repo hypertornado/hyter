@@ -2,7 +2,7 @@ require 'sinatra'
 require_relative "anotation.rb"
 require "sqlite3"
 require "json"
-#require "sinatra/reloader" if development?
+require "sinatra/reloader"
 
 enable :sessions
 
@@ -19,7 +19,8 @@ end
 
 post "/remove_result" do
 	db = SQLite3::Database.new DB_NAME
-	db.execute("delete from annotation where username=? and sentence=?", session['username'], params['sentence']).inspect
+	db.execute("update annotation set deleted='1' where username=? and sentence=?", session['username'], params['sentence'])
+	#db.execute("delete from annotation where username=? and sentence=?", session['username'], params['sentence']).inspect
 	redirect "/"
 end
 
@@ -50,7 +51,8 @@ get "/annotation" do
 
 	db = SQLite3::Database.new DB_NAME
 
-	@annotations = db.execute("select max(id), username, sentence, time from annotation where username=? group by sentence", session['username'])
+	@annotations = db.execute("select max(id), username, sentence, time, deleted from annotation where username=? group by sentence", session['username'])
+	puts @annotations.inspect
 	erb :annotation
 end
 

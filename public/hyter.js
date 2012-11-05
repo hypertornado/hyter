@@ -5,28 +5,50 @@ Cloud = (function() {
 
   function Cloud(words, option) {
     this.slot = __bind(this.slot, this);
+    this.create_target = __bind(this.create_target, this);
     this.component = __bind(this.component, this);    this.option = option;
     this.words = words;
     this.html = this.component();
   }
 
   Cloud.prototype.component = function() {
-    var constraints, covered, h, i, tar, target, value, w, word, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3,
+    var button_panel, clone_button, constraints, covered, del_button, h, i, tar, target, value, w, word, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3,
       _this = this;
     h = $("<div>", {
       "class": "cloud",
       html: ""
     });
-    h.append($("<span>", {
-      style: "float: right;",
-      html: $("<button>", {
-        text: "x",
-        "class": "btn btn-danger",
-        click: function() {
-          if (confirm("Delete this bubble?")) return _this.html.remove();
+    button_panel = $("<div>", {
+      "class": "button-panel",
+      style: "float: right; visibility: hidden;"
+    });
+    del_button = $("<button>", {
+      text: "x",
+      "class": "btn btn-danger btn-mini",
+      click: function() {
+        if (confirm("Delete this bubble?")) return _this.html.remove();
+      }
+    });
+    clone_button = $("<button>", {
+      text: "clone",
+      "class": "btn btn-info btn-mini",
+      click: function(event) {
+        var i, new_el, new_el_textareas, t, _i, _len, _ref;
+        new_el = $(event.target).parent().parent().clone(true);
+        new_el_textareas = new_el.find("textarea");
+        i = 0;
+        _ref = $(event.target).parent().parent().find("textarea");
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          t = _ref[_i];
+          $(new_el_textareas[i]).val($(t).val());
+          i += 1;
         }
-      })
-    }));
+        return $(event.target).parent().parent().after(new_el);
+      }
+    });
+    button_panel.append(clone_button);
+    button_panel.append(del_button);
+    h.append(button_panel);
     i = 0;
     _ref = this.words;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -56,10 +78,7 @@ Cloud = (function() {
       spellcheck: "false"
     });
     if (this.option) constraints.val(this.option.up_rules.join("\n"));
-    target = $("<div>", {
-      "class": "target",
-      html: this.slot()
-    });
+    target = this.create_target();
     h.append($("<div>", {
       style: "clear: both;"
     }));
@@ -69,10 +88,9 @@ Cloud = (function() {
       style: "clear: both;"
     }));
     if (this.option) {
-      console.log("X: " + this.option.target.length);
       i = 0;
       while (i < (this.option.target.length - 1) / 2) {
-        target.children().filter(".btn").first().click();
+        target.children().filter(".plus-button").first().click();
         i += 1;
       }
       i = 0;
@@ -88,7 +106,52 @@ Cloud = (function() {
         i += 1;
       }
     }
+    h.hover(function(event) {
+      return $(event.delegateTarget).find(".button-panel, .btn").css("visibility", "visible");
+    }, function(event) {
+      return $(event.delegateTarget).find(".button-panel, .btn").css("visibility", "hidden");
+    });
     return h;
+  };
+
+  Cloud.prototype.create_target = function() {
+    var ret;
+    ret = $("<div>", {
+      "class": "target"
+    });
+    ret.append($("<span>", {
+      text: "x",
+      "class": "btn btn-danger btn-mini first-remover btn-not-visible",
+      click: this.click_on_delete_slot
+    }));
+    ret.append(this.slot());
+    ret.append($("<span>", {
+      text: "x",
+      "class": "btn btn-danger btn-mini last-remover btn-not-visible",
+      click: this.click_on_delete_slot
+    }));
+    return ret;
+  };
+
+  Cloud.prototype.click_on_delete_slot = function(event) {
+    var name, textareas;
+    if ($(event.target).hasClass("first-remover")) {
+      name = "first";
+    } else {
+      name = "last";
+    }
+    textareas = $(event.target).parent().children().filter("textarea");
+    if (textareas.length === 1) {
+      alert("Can't delete single slot.");
+      return;
+    }
+    if (!confirm("Really delete " + name + " slot and atom?")) return;
+    if (textareas.length > 1) {
+      $(event.target).parent().children().filter("textarea")[name]().remove();
+      $(event.target).parent().children().filter("textarea")[name]().remove();
+      $(event.target).parent().children().filter(".plus-button")[name]().remove();
+      return $(event.target).parent().children().filter(".plus-button")[name]().remove();
+    }
   };
 
   Cloud.prototype.slot = function(dir) {
@@ -104,7 +167,7 @@ Cloud = (function() {
     });
     left = $("<a>", {
       html: "+",
-      "class": "btn btn-mini btn-info tiny-button",
+      "class": "btn btn-mini btn-info plus-button btn-not-visible",
       click: function(event) {
         var slot;
         slot = _this.slot("left");
@@ -115,7 +178,7 @@ Cloud = (function() {
     });
     right = $("<a>", {
       html: "+",
-      "class": "btn btn-mini btn-info tiny-button",
+      "class": "btn btn-mini btn-info plus-button btn-not-visible",
       click: function(event) {
         var slot;
         slot = _this.slot("right");
@@ -129,7 +192,7 @@ Cloud = (function() {
     if (dir) {
       slot_constraints = $("<textarea>", {
         "class": "slot",
-        placeholder: "Slots (lists of constraints)",
+        placeholder: "Slots (constraints)",
         spellcheck: "false"
       });
       if (dir === "left") {
@@ -166,18 +229,19 @@ $(function() {
     words = prompt("Enter sentence for annotation:", "");
     return new Hyter(words, false);
   });
-  return $(".saved-annotation").click(function(event) {
+  $(".saved-annotation").click(function(event) {
     var id;
     id = $(event.target).data("id");
     return $.ajax("/result/" + id + "", {
       success: function(result) {
         result = JSON.parse(result);
         result = JSON.parse(result[3]);
-        new Hyter(false, result);
-        return console.log(result);
+        console.log(result);
+        return new Hyter(false, result);
       }
     });
   });
+  return $(".saved-annotation").last().click();
 });
 
 Sentence = (function() {
@@ -195,7 +259,7 @@ Sentence = (function() {
     this.hyter = hyter;
     this.last_result = [];
     if (text) {
-      this.words = text.split(" ");
+      this.words = $.trim(text).split(/[ ]+/);
     } else {
       this.words = data.words;
     }
@@ -250,7 +314,7 @@ Sentence = (function() {
         el = $(el);
         text = $(el).val();
         if ($(el).hasClass("atom")) {
-          if (text.length > 0) target.push(text);
+          target.push(text);
         } else {
           if (text.length > 0) {
             target.push(text.split("\n"));
@@ -281,7 +345,7 @@ Sentence = (function() {
   };
 
   Sentence.prototype.component = function() {
-    var h, i, w, word, _i, _len, _ref,
+    var h, i, select, w, word, _i, _j, _len, _len2, _ref, _ref2,
       _this = this;
     h = $("<h1>");
     i = 0;
@@ -300,16 +364,36 @@ Sentence = (function() {
       h.append(w);
       i += 1;
     }
+    select = $("<select>", {
+      style: "height: 15px; text-align: bottom;",
+      change: function(event) {
+        var height;
+        height = parseInt($(event.target).attr('value'));
+        $("#bottom-empty-block").css("height", height);
+        $(".tab-pane").css("height", height - 55);
+        return $("#bottom-menu").css("height", height);
+      }
+    });
+    _ref2 = [300, 150, 0];
+    for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+      i = _ref2[_j];
+      select.append($("<option>", {
+        text: "bottom panel width: " + i + " px",
+        value: i
+      }));
+    }
+    $("#zoom-settings").append(select);
     $("#top-right").append($("<button>", {
       text: "+ New bubble",
       "class": "btn btn-primary",
       id: "new-cloud",
       click: function() {
-        return _this.create_cloud();
+        _this.create_cloud();
+        return $(window).scrollTop(200000);
       }
     }));
     $("#top-right").append($("<button>", {
-      text: "Reload sentences",
+      text: "Save and reload",
       "class": "btn btn-success",
       id: "new-cloud",
       click: function() {
@@ -323,31 +407,32 @@ Sentence = (function() {
             q: query
           },
           success: function(data) {
-            var d, result, sen, _j, _k, _l, _len2, _len3, _len4, _ref2, _ref3, _ref4;
+            var d, result, sen, _k, _l, _len3, _len4, _len5, _m, _ref3, _ref4, _ref5;
+            console.log(data);
             $("#results").html("");
             $("#diff").html("");
             result = JSON.parse(data);
             _this.last_result = result.words;
-            _ref2 = result.words;
-            for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-              d = _ref2[_j];
+            _ref3 = result.words;
+            for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
+              d = _ref3[_k];
               sen = $("<div>", {
                 text: d.join(" ")
               });
               $("#results").append(sen);
             }
-            _ref3 = result.added;
-            for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
-              d = _ref3[_k];
+            _ref4 = result.added;
+            for (_l = 0, _len4 = _ref4.length; _l < _len4; _l++) {
+              d = _ref4[_l];
               sen = $("<div>", {
                 style: "color: #5BB75B;",
                 text: "+ " + d.join(" ")
               });
               $("#diff").append(sen);
             }
-            _ref4 = result.removed;
-            for (_l = 0, _len4 = _ref4.length; _l < _len4; _l++) {
-              d = _ref4[_l];
+            _ref5 = result.removed;
+            for (_m = 0, _len5 = _ref5.length; _m < _len5; _m++) {
+              d = _ref5[_m];
               sen = $("<div>", {
                 style: "color: #DA4F49;",
                 text: "- " + d.join(" ")
@@ -358,6 +443,24 @@ Sentence = (function() {
             return $("#diff-name").text("Diff ( +" + result.added.length + ", -" + result.removed.length + " )");
           }
         });
+      }
+    }));
+    $("#top-right").append($("<button>", {
+      text: "Sort",
+      "class": "btn btn-info",
+      click: function() {
+        var clouds, sorted;
+        clouds = $(".cloud");
+        sorted = clouds.sort(function(a, b) {
+          if (!($(a).find(".word-selected").length > 0)) return 1;
+          if (!($(b).find(".word-selected").length > 0)) return -1;
+          if (parseInt($(a).find(".word-selected").data("word-id").slice(2)) > parseInt($(b).find(".word-selected").data("word-id").slice(2))) {
+            return 1;
+          } else {
+            return -1;
+          }
+        });
+        return $("#clouds").append(sorted);
       }
     }));
     return h;

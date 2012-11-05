@@ -8,7 +8,7 @@ class Sentence
 		@hyter = hyter
 		@last_result = []
 		if text
-			@words = text.split(" ")
+			@words = $.trim(text).split(/[ ]+/)
 		else
 			@words = data.words
 		$("#sentence").append(@component())
@@ -47,7 +47,7 @@ class Sentence
 				el = $(el)
 				text = $(el).val()
 				if $(el).hasClass("atom")
-					target.push(text) if text.length > 0
+					target.push(text) #if text.length > 0
 				else
 					if text.length > 0
 						target.push(text.split("\n"))
@@ -82,6 +82,24 @@ class Sentence
 			)
 			h.append(w)
 			i += 1
+
+		select = $("<select>"
+			style: "height: 15px; text-align: bottom;"
+			change: (event) =>
+				height = parseInt($(event.target).attr('value'))
+				$("#bottom-empty-block").css("height", height)
+				$(".tab-pane").css("height", (height - 55))
+				$("#bottom-menu").css("height", height)
+		)
+		for i in [300, 150, 0]
+			select.append(
+		  	$("<option>"
+		  		text: "bottom panel width: #{i} px"
+		  		value: i
+		  	)
+			)
+		$("#zoom-settings").append(select)
+
 		$("#top-right").append(
 			$("<button>"
 				text: "+ New bubble"
@@ -89,12 +107,13 @@ class Sentence
 				id: "new-cloud"
 				click: =>
 					@create_cloud()
+					$(window).scrollTop(200000)
 			)
 		)
 
 		$("#top-right").append(
 			$("<button>"
-				text: "Reload sentences"
+				text: "Save and reload"
 				class: "btn btn-success"
 				id: "new-cloud"
 				click: =>
@@ -106,6 +125,7 @@ class Sentence
 						data:
 							q: query
 						success: (data) =>
+							console.log data
 							$("#results").html("")
 							$("#diff").html("")
 							result = JSON.parse(data)
@@ -131,6 +151,26 @@ class Sentence
 							$("#diff-name").text("Diff ( +#{result.added.length}, -#{result.removed.length} )")
 			)
 		)
+
+		$("#top-right").append(
+			$("<button>"
+				text: "Sort"
+				class: "btn btn-info"
+				click: ->
+					clouds = $(".cloud")
+					sorted = clouds.sort(
+						(a, b) ->
+							return 1 unless $(a).find(".word-selected").length > 0
+							return -1 unless $(b).find(".word-selected").length > 0
+							if parseInt($(a).find(".word-selected").data("word-id").slice(2)) > parseInt($(b).find(".word-selected").data("word-id").slice(2))
+								return 1
+							else
+								return -1
+					)
+					$("#clouds").append(sorted)
+			)
+		)
+
 		return h
 
 	word: (w) =>

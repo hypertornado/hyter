@@ -21,6 +21,8 @@ $ ->
 				success: (result) =>
 					result = JSON.parse(result)
 					result = JSON.parse(result[3])
-					new Hyter(false, result)
 					console.log result
+					new Hyter(false, result)
 	)
+	#TODO remove this
+	$(".saved-annotation").last().click()

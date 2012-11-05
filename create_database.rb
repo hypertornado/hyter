@@ -17,6 +17,7 @@ rows = db.execute <<-SQL
    username varchar(100),
    sentence text,
    data text,
+   deleted integer,
    time integer
   );
 SQL

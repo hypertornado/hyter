@@ -13,16 +13,37 @@ class Cloud
 			class: "cloud"
 			html: ""
 		)
-		h.append($("<span>"
-			style: "float: right;"
-			html: $("<button>"
+
+		button_panel = $("<div>"
+			class: "button-panel"
+			style: "float: right; visibility: hidden;"
+		)
+
+		del_button = $("<button>"
 				text: "x"
-				class: "btn btn-danger"
+				class: "btn btn-danger btn-mini"
 				click: =>
 					if confirm("Delete this bubble?")
 						@html.remove()
 			)
-		))
+
+		clone_button = $("<button>"
+				text: "clone"
+				class: "btn btn-info btn-mini"
+				click: (event) =>
+					new_el =  $(event.target).parent().parent().clone(true)
+					new_el_textareas = new_el.find("textarea")
+					i = 0
+					for t in $(event.target).parent().parent().find("textarea")
+						$(new_el_textareas[i]).val($(t).val())
+						i += 1
+					$(event.target).parent().parent().after(new_el)
+			)
+
+		button_panel.append(clone_button)
+		button_panel.append(del_button)
+
+		h.append(button_panel)
 		i = 0
 		for word in @words
 			w = $("<span>"
@@ -45,10 +66,7 @@ class Cloud
 		)
 		if @option
 			constraints.val(@option.up_rules.join("\n"))
-		target = $("<div>"
-			class: "target"
-			html: @slot()
-		)
+		target = @create_target()
 		h.append($("<div>"
 			style: "clear: both;"
 		))
@@ -58,10 +76,9 @@ class Cloud
 			style: "clear: both;"
 		))
 		if @option
-			console.log "X: #{@option.target.length}"
 			i = 0
 			while i < (@option.target.length - 1) / 2
-				target.children().filter(".btn").first().click()
+				target.children().filter(".plus-button").first().click()
 				i += 1
 
 			i = 0
@@ -73,7 +90,54 @@ class Cloud
 				$(target.children().filter("textarea")[i]).val(value)
 				i += 1
 
+		h.hover(
+				(event) ->
+					$(event.delegateTarget).find(".button-panel, .btn").css("visibility", "visible")
+			,
+				(event) =>
+					$(event.delegateTarget).find(".button-panel, .btn").css("visibility", "hidden")
+		)
+
 		return h
+
+
+	create_target: =>
+    ret = $("<div>"
+      class: "target"
+    )
+    ret.append(
+      $("<span>"
+        text: "x"
+        class: "btn btn-danger btn-mini first-remover btn-not-visible"
+        click: @click_on_delete_slot
+      )
+    )
+    ret.append(@slot())
+    ret.append(
+      $("<span>"
+        text: "x"
+        class: "btn btn-danger btn-mini last-remover btn-not-visible"
+        click: @click_on_delete_slot
+      )
+    )
+    return ret
+
+  click_on_delete_slot: (event) ->
+    if $(event.target).hasClass("first-remover")
+      name = "first"
+    else
+      name = "last"
+    textareas = $(event.target).parent().children().filter("textarea")
+    if textareas.length == 1
+      alert("Can't delete single slot.")
+      return
+    return unless confirm("Really delete #{name} slot and atom?")
+    if textareas.length > 1
+      $(event.target).parent().children().filter("textarea")[name]().remove()
+      $(event.target).parent().children().filter("textarea")[name]().remove()
+      $(event.target).parent().children().filter(".plus-button")[name]().remove()
+      $(event.target).parent().children().filter(".plus-button")[name]().remove()
+
 
 	slot: (dir = false) =>
 		h = $("<span>"
@@ -86,7 +150,7 @@ class Cloud
 		)
 		left = $("<a>"
 			html: "+"
-			class: "btn btn-mini btn-info tiny-button"
+			class: "btn btn-mini btn-info plus-button btn-not-visible"
 			click: (event) =>
 				slot = @slot("left")
 				slot.hide()
@@ -95,7 +159,7 @@ class Cloud
 		)
 		right = $("<a>"
 			html: "+"
-			class: "btn btn-mini btn-info tiny-button"
+			class: "btn btn-mini btn-info plus-button btn-not-visible"
 			click: (event) =>
 				slot = @slot("right")
 				slot.hide()
@@ -108,7 +172,7 @@ class Cloud
 		if dir
 			slot_constraints = $("<textarea>"
 				class: "slot"
-				placeholder: "Slots (lists of constraints)"
+				placeholder: "Slots (constraints)"
 				spellcheck: "false"
 			)
 			if dir == "left"

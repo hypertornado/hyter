@@ -65,12 +65,12 @@ class Anotation
 			change = false
 			new_rules = []
 			rules.each do |rule|
-				puts rule
+				#puts rule
 				currently_found = false
 				found_index = false
 				rule['target'].each_with_index do |target, i|
 					if target.class == String and target.include? "\n" and change == false
-						puts " - #{target}"
+						#puts " - #{target}"
 						currently_found = true
 						found_index = i
 						change = true
@@ -79,10 +79,10 @@ class Anotation
 				unless currently_found
 					new_rules.push(rule)
 				else
-					puts "FOUND INDEX #{found_index}"
+					#puts "FOUND INDEX #{found_index}"
 					splited_rules = []
 					rule['target'][found_index].split("\n").each do |t|
-						puts t
+						#puts t
 						r = rule.clone
 						r['target'] = rule['target'].clone
 						r['target'][found_index] = t

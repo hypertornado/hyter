@@ -2,7 +2,7 @@ require 'sinatra'
 require_relative "anotation.rb"
 require "sqlite3"
 require "json"
-require "sinatra/reloader"
+#require "sinatra/reloader"
 
 enable :sessions
 
@@ -36,8 +36,6 @@ get "/results" do
 
 	data = JSON.parse(params['q'])
 
-	puts data.inspect
-
 	db = SQLite3::Database.new DB_NAME
 	db.execute("INSERT INTO annotation (username, sentence, data, time) VALUES (?, ?, ?, ?)", session['username'], data['words'].join(" "), data.to_json, Time.now.to_i)
 
@@ -52,7 +50,6 @@ get "/annotation" do
 	db = SQLite3::Database.new DB_NAME
 
 	@annotations = db.execute("select max(id), username, sentence, time, deleted from annotation where username=? group by sentence", session['username'])
-	puts @annotations.inspect
 	erb :annotation
 end
 
@@ -60,7 +57,6 @@ post "/authenticate" do
 	session['username'] = nil
 	db = SQLite3::Database.new DB_NAME
 	result = db.execute("select * from user where username=? and password=?", [params['username'], params['password']])
-	puts result.inspect
 	if result.size == 1
 		session['username'] = result[0][1]
 		redirect "/"

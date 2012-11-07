@@ -229,7 +229,7 @@ $(function() {
     words = prompt("Enter sentence for annotation:", "");
     return new Hyter(words, false);
   });
-  $(".saved-annotation").click(function(event) {
+  return $(".saved-annotation").click(function(event) {
     var id;
     id = $(event.target).data("id");
     return $.ajax("/result/" + id + "", {
@@ -241,7 +241,6 @@ $(function() {
       }
     });
   });
-  return $(".saved-annotation").last().click();
 });
 
 Sentence = (function() {

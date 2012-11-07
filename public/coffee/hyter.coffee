@@ -24,5 +24,4 @@ $ ->
 					console.log result
 					new Hyter(false, result)
 	)
-	#TODO remove this
-	$(".saved-annotation").last().click()
+	#$(".saved-annotation").last().click()

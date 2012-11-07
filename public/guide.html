@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" type="text/css" href="/bootstrap.css" />
+  <link rel="stylesheet" type="text/css" href="/style.css" />	
+	<title>DepRefSet</title>
+</head>
+<body>
+<div class="container">
+<h1>Uživatelská příručka DepRefSet</h1>
+
+<h2>Přihlášení a práce s anotacemi</h2>
+<p>
+Uživatel klikne na adresu <a href="http://ufallab.ms.mff.cuni.cz:4567/">http://ufallab.ms.mff.cuni.cz:4567/</a>, zadá uživatelské jméno a heslo, které mu poslal administrátor emailem a klikne na tlačítko Odeslat.
+</p>
+
+<p>
+Po zadání správných údajů se uživateli zobrazí seznam anotovaných vět. Kliknutím na název věty se zobrazí anotovaná věta, tlačítkem delete se <b>anotace smaže</b>. Nová anotace jde přidat kliknutím na tlačítko "Create new annotation", kdy se do dialogového okna <b>vloží věta k anotaci</b>. Zadaná věta se rozdělí na slova podle mezer, takže je potřeba před interpunkční znaménko přidat mezeru.
+</p>
+
+<h2>Anotace</h2>
+<p>Uživatel nejprve kliknutím na jedno slovo vybere kořen věty, ze které se bude tvořit strom překladů. Následně uživatel klikne na tlačítko "+ New bubble", která přidá do rozhraní jednu jednotku překladu. V záhlaví bubliny si uživatel zakliká, která zdrojová slova tato bublina <b>pokrývá</b>. "Constraints we satisfy" je textové pole, kde každý řádek určuje omezení, které tato bublina splňuje.</p>
+
+<p>
+V pravé části každé bubliny s nachází atomy a sloty. Atomy jsou samotné překlady, každý řádek označuje jednu variantu. Sloty označují prázdná místa, která je potřeba vyplnit. Každý řádek obsahuje jedno omezení pro vyplněný slot. Kliknutím na tlačítko "+" se přidá vždy jeden slot a jeden atom. Kliknutím na "x" se umaže poslední dvojice slotu a atomu. Nejjednodušší překlad jde udělat pomocí jedné bubliny, která pokrývá všechna slova a má jediný atom se všemi překlady.
+</p>
+
+<p>
+Kliknutím na tlačítko "Save and reload" se uloží celá anotace a v dolním panelu se zobrazí všechny překlady. V panelu diff jsou rozdíly v překladech od posledního uložení. Rozbalovací nabídkou v horním panelu jde změnit šířka dolního panelu.
+<p>
+
+
+</div>
+
+</body>
+</html>

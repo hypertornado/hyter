@@ -4,12 +4,16 @@ require "json"
 require "digest/sha2"
 require "tempfile"
 
-PROLOG = "yap"
-
 class Anotation
 
 	def initialize(rules)
-		#puts rules
+
+		if system("which yap > /dev/null 2>&1")
+			@prolog = "yap"
+		else
+			@prolog = "swipl"
+		end
+
 		@words_to_i = {}
 		@i_to_words = {}
 		@i = 1
@@ -131,7 +135,7 @@ class Anotation
 			file.write(str)
 			path = File.expand_path(file.path)
 			file.close
-			`#{PROLOG} -l #{path} > #{path}_out`
+			`#{@prolog} -l #{path} > #{path}_out`
 			result = File.readlines("#{path}_out")
 			File.delete(path)
 			File.delete(path+"_out")

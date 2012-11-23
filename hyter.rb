@@ -7,7 +7,7 @@ require "json"
 enable :sessions
 
 DB_NAME = "databaze.db"
-ADMINS = ['hypertornado']
+ADMINS = ['hypertornado', 'bojar', 'zeman']
 
 get "/" do
 	if session['username']

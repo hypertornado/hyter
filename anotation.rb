@@ -4,7 +4,7 @@ require "json"
 require "digest/sha2"
 require "tempfile"
 
-PROLOG = "swipl"
+PROLOG = "yap"
 
 class Anotation
 

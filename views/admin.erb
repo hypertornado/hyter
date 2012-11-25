@@ -1,12 +1,36 @@
+
+<head>
+<title>Admin</title>
+<link rel="stylesheet" type="text/css" href="/bootstrap.css" />
+
+</head>
+
+<body>
 <h1>Admin</h1>
 
 <h2>Users</h2>
-<table border="1">
+
+<table class="table">
 <% @users.each do |user| %>
+	<% annotations = @db.execute("select max(id), username, sentence, time, deleted from annotation where username=? group by sentence", user[1]) %>
 	<tr>
-		<td><%= user[0] %></td>
-		<td><%= user[1] %></td>
+		<td><b><%= user[0] %></b></td>
+		<td><b><%= user[1] %></b></td>
 	</tr>
+	<tr>
+		<td></td><td><ul>
+	<% annotations.each do |a| %>
+	<% unless a[4] %>
+		<li><a href="/sentence/<%= user[1] %>/<%= a[2] %>"><%= a[2] %></a></li>
+	<% end %>
+	<% end %>
+	</ul>
+		<form method="post" action="/create_translation">
+			<input type="" name="text" placeholder="Text of sentence">
+			<input type="hidden" name="username" value="<%= user[1] %>">
+			<input type="submit" value="Create sentence" class="btn">
+		</form>
+	</td></tr>
 <% end %>
 </table>
 
@@ -18,3 +42,5 @@ Password: <input type="password" name="password"><br>
 <input type="submit">
 
 </form>
+
+</body>

@@ -265,10 +265,13 @@ Sentence = (function() {
     $("#sentence").append(this.component());
     if (data) {
       $("span[data-name='" + data.root + "']").click();
-      _ref = data.options;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        option = _ref[_i];
-        this.create_cloud(option);
+      if (data.reference) $("#reference").html(data.reference);
+      if (data.options) {
+        _ref = data.options;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          option = _ref[_i];
+          this.create_cloud(option);
+        }
       }
     }
   }
@@ -334,6 +337,7 @@ Sentence = (function() {
       return false;
     }
     req.words = this.words;
+    req.reference = $("#reference").html();
     return JSON.stringify(req);
   };
 

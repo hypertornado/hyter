@@ -27,6 +27,7 @@
 	</ul>
 		<form method="post" action="/create_translation">
 			<input type="" name="text" placeholder="Text of sentence">
+			<textarea placeholder="Reference translation" name="reference"></textarea>
 			<input type="hidden" name="username" value="<%= user[1] %>">
 			<input type="submit" value="Create sentence" class="btn">
 		</form>

@@ -70,6 +70,11 @@ end
 post "/add_user" do
 	redirect "/login.html" unless ADMINS.include? session['username']
 	db = SQLite3::Database.new DB_NAME
+
+	result = db.execute("select * from user where username=?", [params['username']])
+	if result.size > 0
+		redirect "/admin"
+	end
 	db.execute("INSERT INTO user (username, password) VALUES (?, ?)", [params['username'], params['password']])
 	redirect "/admin"
 end
@@ -101,6 +106,21 @@ end
 
 get "/session" do
 	session['username']
+end
+
+post "/create_translation" do
+
+	redirect "/login.html" unless ADMINS.include? session['username']
+
+	db = SQLite3::Database.new DB_NAME
+
+	words = params['text'].strip.split(/[ \t]+/)
+
+	data = {words: words, reference: params['reference']}
+
+	db.execute("INSERT INTO annotation (username, sentence, data, time) VALUES (?, ?, ?, ?)", params['username'], words.join(" "), data.to_json, Time.now.to_i)
+
+	redirect "/admin"
 end
 
 

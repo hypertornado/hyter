@@ -14,8 +14,11 @@ class Sentence
 		$("#sentence").append(@component())
 		if data
 			$("span[data-name='#{data.root}']").click()
-			for option in data.options
-				@create_cloud(option)
+			if data.reference
+				$("#reference").html(data.reference)
+			if data.options
+				for option in data.options
+					@create_cloud(option)
 
 	create_request: =>
 		w = []
@@ -62,6 +65,7 @@ class Sentence
 			alert "No bubble is defined correctly."
 			return false
 		req.words = @words
+		req.reference = $("#reference").html()
 		return JSON.stringify(req)
 
 	create_cloud: (data) =>

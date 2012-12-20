@@ -3,7 +3,7 @@
 <h1><%= @params['sentence'] %> <small>(<%= @params['user'] %>)</small></h1>
 
 <% @annotations.each do |a| %>
-	<h4><%= Time.at(a[3]) %></h4>
+	<h4><%= Time.at(a[3]) %> <a href="/export_prolog/<%= a[0] %>">prolog export</a></h4>
 	<% 
 		result = JSON.parse(a[5])
 	%>

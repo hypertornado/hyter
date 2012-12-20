@@ -50,7 +50,7 @@ class Anotation
 		return get_token(w)
 	end
 
-	def get_query
+	def get_query(include_maping = false)
 		ret = "sent("
 		ret += convert_word(@rules['root'])
 		ret += ", "
@@ -59,6 +59,21 @@ class Anotation
 		get_options.each do |option|
 			ret += "\n" + option
 		end
+
+		if include_maping
+			ret += "\n\n"
+			ret += "%Strings maping"
+			@i_to_words.each do |i|
+				ret += "\n%t_#{i[0]} \t#{i[1]}"
+			end
+
+			ret += "\n\n%Source words\n"
+			@rules['words'].each do |word|
+				ret += "%#{word}\n"
+			end
+			ret += "\n\n"
+		end
+
 		return ret
 	end
 
@@ -119,10 +134,10 @@ class Anotation
 		return ret
 	end
 
-	def construct_prolog_string
+	def construct_prolog_string(include_maping = false)
 		skeleton = File.readlines("skeleton.pl").join("")
 		skeleton += "\n"
-		skeleton += get_query()
+		skeleton += get_query(include_maping)
 		skeleton += "\n:- demo; halt."
 		return skeleton
 	end

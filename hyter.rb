@@ -2,9 +2,10 @@ require 'sinatra'
 require_relative "anotation.rb"
 require "sqlite3"
 require "json"
-require "sinatra/reloader"
+#require "sinatra/reloader"
 
-enable :sessions
+enable :sessions, :logging
+set :logging, true
 
 DB_NAME = "databaze.db"
 ADMINS = ['hypertornado', 'bojar', 'zeman']
@@ -79,6 +80,26 @@ post "/add_user" do
 	redirect "/admin"
 end
 
+get "/export_times" do
+	redirect "/login.html" unless ADMINS.include? session['username']
+	db = SQLite3::Database.new DB_NAME
+	@annotations = db.execute("select id, username, time, sentence, deleted from annotation order by username, time")
+	ret = ""
+	@annotations.each do |a|
+		ret += "#{a[0]}\t#{a[1]}\t#{a[2]}\t#{a[4]}\t#{a[3]}\n"
+	end
+	ret
+end
+
+get "/export_prolog/:id" do
+	redirect "/login.html" unless ADMINS.include? session['username']
+	db = SQLite3::Database.new DB_NAME
+	@annotations = db.execute("select id, username, sentence, time, deleted, data from annotation where id=?", @params['id'])
+
+	anotation = Anotation.new(@annotations.first[5])
+
+	return anotation.construct_prolog_string(true)
+end
 
 get "/admin" do
 	redirect "/login.html" unless ADMINS.include? session['username']

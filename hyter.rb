@@ -2,7 +2,8 @@ require 'sinatra'
 require_relative "anotation.rb"
 require "sqlite3"
 require "json"
-#require "sinatra/reloader"
+require 'cgi'
+require "sinatra/reloader"
 
 enable :sessions, :logging
 set :logging, true
@@ -43,7 +44,11 @@ get "/results" do
 	db = SQLite3::Database.new DB_NAME
 	db.execute("INSERT INTO annotation (username, sentence, data, time) VALUES (?, ?, ?, ?)", session['username'], data['words'].join(" "), data.to_json, Time.now.to_i)
 
-	return result
+	if params['justsave']
+		return true
+	else
+		return result
+	end
 end
 
 get "/annotation" do
@@ -118,9 +123,11 @@ get "/sentence/:user/:sentence" do
 
 	redirect "/login.html" unless ADMINS.include? session['username']
 
+	@sentence = CGI.unescape(@params['sentence'])
+
 	db = SQLite3::Database.new DB_NAME
 
-	@annotations = db.execute("select id, username, sentence, time, deleted, data from annotation where username=? and sentence=?", @params['user'], @params['sentence'])
+	@annotations = db.execute("select id, username, sentence, time, deleted, data from annotation where username=? and sentence=?", @params['user'], @sentence)
 	
 	erb :sentence
 end

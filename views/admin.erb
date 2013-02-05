@@ -21,7 +21,7 @@
 		<td></td><td><ul>
 	<% annotations.each do |a| %>
 	<% unless a[4] %>
-		<li><a href="/sentence/<%= user[1] %>/<%= a[2] %>"><%= a[2] %></a></li>
+		<li><a href="/sentence/<%= user[1] %>/<%= CGI.escape(a[2]) %>"><%= a[2] %></a></li>
 	<% end %>
 	<% end %>
 	</ul>

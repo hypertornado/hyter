@@ -396,6 +396,29 @@ Sentence = (function() {
       }
     }));
     $("#top-right").append($("<button>", {
+      text: "Save",
+      "class": "btn btn-success",
+      id: "just-save",
+      click: function() {
+        var query;
+        query = _this.create_request();
+        if (query === false) return;
+        $("#just-save").attr("disabled", true);
+        return $.ajax("/results", {
+          data: {
+            q: query,
+            justsave: true
+          },
+          success: function(data) {
+            return $("#just-save").attr("disabled", false);
+          },
+          error: function() {
+            alert("error while saving");
+            return $("#just-save").attr("disabled", false);
+          }
+        });
+      }
+    }), $("<button>", {
       text: "Save and reload",
       "class": "btn btn-success",
       id: "new-cloud",

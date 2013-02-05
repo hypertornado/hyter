@@ -117,6 +117,24 @@ class Sentence
 
 		$("#top-right").append(
 			$("<button>"
+				text: "Save"
+				class: "btn btn-success"
+				id: "just-save"
+				click: =>
+					query = @create_request()
+					return if query == false
+					$("#just-save").attr("disabled", true)
+					$.ajax "/results"
+						data:
+							q: query
+							justsave: true
+						success: (data) =>
+							$("#just-save").attr("disabled", false)
+						error: =>
+							alert "error while saving"
+							$("#just-save").attr("disabled", false)
+			)
+			$("<button>"
 				text: "Save and reload"
 				class: "btn btn-success"
 				id: "new-cloud"

@@ -3,7 +3,7 @@ require_relative "anotation.rb"
 require "sqlite3"
 require "json"
 require 'cgi'
-require "sinatra/reloader"
+#require "sinatra/reloader"
 
 enable :sessions, :logging
 set :logging, true

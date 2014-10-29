@@ -25,3 +25,6 @@ SQL
 
 db.execute("INSERT INTO user (username, password) 
             VALUES (?, ?)", ["hypertornado", "ondra85"])
+
+db.execute("INSERT INTO user (username, password) 
+            VALUES (?, ?)", ["bojar", "bojar85"])
